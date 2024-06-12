@@ -115,5 +115,73 @@ Escape = esc키와 같음
 
 GetAxis = 점진적으로 빨라지는 움직임을 표현할 때 쓰기 좋음
 GetAxisRaw = 가중치 없는 움직임을 표현할 때 씀
+
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------------------------------------------
+
+목표 지점으로 이동시키기 [유니티 입문 강좌 B7]
+https://youtu.be/gnO1GVRuKxk?si=8UVO9KZy_kD1u97U
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Move : MonoBehaviour
+{
+   
+    void Start()
+    {
+        
+    }
+
+    Vector3 target = new Vector3(8, 1.5f, 0);
+
+    void Update()
+    {
+        // 1.MoveTowards == 등속 운동
+        transform.position =
+            Vector3.MoveTowards(transform.position // 현재 위치
+                                , target // 목표 지점 위치
+                                , 0.1f // 0.1f는 속도를 의미
+                                );
+
+        // 2.SmoothDamp == 부드러운 감속 이동
+        Vector3 velo = Vector3.zero;
+
+        transform.position =
+            Vector3.SmoothDamp(transform.position
+                               , target
+                               , ref velo // 참조 속도 -> 실시간으로 바뀌는 값 적용 가능
+                               , 0.2f);
+
+        // 3.Lerp == 선형보간 이동, 스무스댐프와는 반대로 값을 주어야한다.
+        transform.position =
+               Vector3.Lerp(transform.position
+                                   , target
+                                   , 0.05f);
+
+        // 4.Slerp == 구면 선형 보간 이동
+        transform.position =
+               Vector3.Slerp(transform.position
+                                   , target
+                                   , 0.05f);
+    }
+}
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+
+이동거리를 공평하게, 델타타임 [유니티 입문 강좌 B8]
+https://youtu.be/QGFaA3WYAwk?si=QGGbNu7pXblkzD9V
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+
+Time.deltaTime 사용하는 방법
+1)Translate : 벡터에 곱하기
+ex1)transform.Translate(Vec * Time.deltaTime);
+2)Vector 함수 : 시간 매개변수에 곱하기
+ex2)Vector3.Lerp(Vec1, Vec2, T * Time.deltaTime);
+
+Time.deltaTime : 이전 프레임의 완료까지 걸린 시간. 프레임이 적으면 델타타입 값이 커지고 프레임이 많으면 델타타입 값이 작아진다.
